@@ -1,0 +1,84 @@
+version: '3.7'
+
+services:
+  app:
+    image: jkaninda/laravel-php-fpm:8.2-alpine
+    container_name: marketplace-app
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - ./:/var/www
+    networks:
+      - marketplace-network
+    depends_on:
+      - db
+      - redis
+
+#  frontend:
+#    build:
+#      context: ./frontend-react
+#      dockerfile: Dockerfile
+#    tty: true
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - ./frontend-react:/app/frontend-react
+#    depends_on:
+#      - app
+#    networks:
+#      - marketplace-network
+
+  db:
+    image: 'postgres:latest'
+    container_name: marketplace-db
+    restart: always
+    ports:
+      - '${FORWARD_DB_PORT:-5432}:5432'
+    environment:
+      POSTGRES_USER: '${DB_USERNAME}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD}'
+      POSTGRES_DB: '${DB_DATABASE}'
+      SERVICE_TAGS: dev
+      SERVICE_NAME: marketplace-db
+    volumes:
+      - ./docker-compose/pgsql:/docker-entrypoint-initdb.d
+    networks:
+      - marketplace-network
+
+  nginx:
+    image: 'nginx:1.17-alpine'
+    container_name: marketplace-nginx
+    restart: unless-stopped
+    ports:
+      - '8000:80'
+    expose:
+      - '8000'
+      - '3000'
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d
+      -   type: bind
+          source: /run/host-services/ssh-auth.sock
+          target: /run/host-services/ssh-auth.sock
+    environment:
+      - SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock
+    networks:
+      - marketplace-network
+
+  redis:
+    image: redis:alpine
+    container_name: marketplace-redis
+    volumes:
+      - marketplace-data:/data
+    ports:
+      - '6382:6379'
+    networks:
+      - marketplace-network
+
+networks:
+  marketplace-network:
+    driver: bridge
+
+volumes:
+  marketplace-data:
+    driver: local
