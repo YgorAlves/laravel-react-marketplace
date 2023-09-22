@@ -29,21 +29,23 @@ services:
 #      - marketplace-network
 
   db:
-    image: 'postgres:latest'
-    container_name: marketplace-db
-    restart: always
+    image: 'mysql:8.1.0'
     ports:
-      - '${FORWARD_DB_PORT:-5432}:5432'
+      - '${FORWARD_DB_PORT:-3306}:3306'
     environment:
-      POSTGRES_USER: '${DB_USERNAME}'
-      POSTGRES_PASSWORD: '${DB_PASSWORD}'
-      POSTGRES_DB: '${DB_DATABASE}'
-      SERVICE_TAGS: dev
-      SERVICE_NAME: marketplace-db
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
     volumes:
-      - ./docker-compose/pgsql:/docker-entrypoint-initdb.d
+      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
     networks:
       - marketplace-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
+      retries: 3
+      timeout: 5s
+
 
   nginx:
     image: 'nginx:1.17-alpine'
