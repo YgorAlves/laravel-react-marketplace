@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 
-class ItemResource extends JsonResource
+class OrderItemResource extends JsonResource
 {
     public static $wrap = false;
 
@@ -18,17 +18,10 @@ class ItemResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description,
-            'price' => $this->price,
-            'stock' => $this->stock,
-            'is_active' => (bool) $this->is_active,
-            'image_url' => $this->image_url,
-            'expiry_date' => $this->expiry_date->format('Y-m-d H:i:s'),
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'yours' => $this->user_id === Auth::id(),
-            'seller' => $this->user->name
+            'item_id' => $this->item_id,
+            'title' => $this->item->title,
+            'image_url' => $this->item->image_url,
+            'review' => array_filter($this->item->reviews->toArray(), fn($r) => $r['user_id'] === Auth::id())
         ];
     }
 }
