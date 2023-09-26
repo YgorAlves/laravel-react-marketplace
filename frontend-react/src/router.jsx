@@ -1,12 +1,15 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Users from "./pages/Users";
+import Items from "./pages/Items";
 import NotFound from "./pages/NotFound";
 import DefaultLayout from "./components/DefaultLayout";
 import GuestLayout from "./components/GuestLayout";
 import Dashboard from "./pages/Dashboard";
-import UserForm from "./pages/UserForm";
+import ItemsForm from "./pages/ItemsForm";
+import Cart from "./pages/Cart";
+import Orders from "./pages/Orders";
+import Reviews from "./pages/Reviews";
 
 const router = createBrowserRouter([
   {
@@ -15,23 +18,35 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Navigate to="/users" />,
+        element: <Navigate to="/dashboard" />,
       },
       {
         path: "/dashboard",
         element: <Dashboard />,
       },
       {
-        path: "/users",
-        element: <Users />,
+        path: "/items",
+        element: <Items />,
       },
       {
-        path: "/users/new",
-        element: <UserForm key="userCreate" />,
+        path: "/items/new",
+        element: <ItemsForm key="itemCreate" />,
       },
       {
-        path: "/users/:id",
-        element: <UserForm key="userUpdate" />,
+        path: "/items/:id",
+        element: <ItemsForm key="itemUpdate" />,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
+      },
+      {
+        path: "/orders",
+        element: <Orders />,
+      },
+      {
+        path: "/reviews",
+        element: <Reviews />,
       },
     ],
   },

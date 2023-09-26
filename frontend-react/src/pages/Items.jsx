@@ -2,20 +2,20 @@ import { useEffect, useState } from "react";
 import axiosClient from "../axios-client";
 import { Link } from "react-router-dom";
 
-export default function Users() {
-  const [users, setUsers] = useState([]);
+export default function Items() {
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getUsers();
+    getItems();
   }, []);
 
-  const getUsers = () => {
+  const getItems = () => {
     setLoading(true);
     axiosClient
-      .get("/users")
+      .get("/items")
       .then(({ data }) => {
-        setUsers(data.data);
+        setItems(data.data);
       })
       .finally(() => {
         setLoading(false);
@@ -23,11 +23,11 @@ export default function Users() {
   };
 
   const onDelete = (u) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) {
+    if (!window.confirm("Are you sure you want to delete this item?")) {
       return;
     }
-    axiosClient.delete(`/users/${u.id}`).then(() => {
-      getUsers();
+    axiosClient.delete(`/items/${u.id}`).then(() => {
+      getItems();
     });
   };
 
@@ -40,8 +40,8 @@ export default function Users() {
           alignItems: "center",
         }}
       >
-        <h1>Users</h1>
-        <Link to="/users/new" className="btn-add">
+        <h1>Items</h1>
+        <Link to="/items/new" className="btn-add">
           Add new
         </Link>
       </div>
@@ -50,8 +50,11 @@ export default function Users() {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Expiry Date</th>
               <th>Create Date</th>
               <th>Actions</th>
             </tr>
@@ -67,14 +70,17 @@ export default function Users() {
           )}
           {!loading && (
             <tbody>
-              {users?.map((u) => (
+              {items?.map((u) => (
                 <tr key={u.id}>
                   <td>{u.id}</td>
-                  <td>{u.name}</td>
-                  <td>{u.email}</td>
+                  <td>{u.title}</td>
+                  <td>{u.description.slice(0, 25)}</td>
+                  <td>{u.price}</td>
+                  <td>{u.stock}</td>
+                  <td>{u.expiry_date}</td>
                   <td>{u.created_at}</td>
                   <td>
-                    <Link to={"/users/" + u.id} className="btn-edit">
+                    <Link to={"/items/" + u.id} className="btn-edit">
                       Edit
                     </Link>
                     &nbsp;

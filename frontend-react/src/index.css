@@ -49,6 +49,7 @@ input:focus {
 .btn,
 .btn-add,
 .btn-edit,
+.btn-disabled,
 .btn-delete {
   font-family: "Roboto", sans-serif;
   outline: 0;
@@ -69,6 +70,7 @@ input:focus {
 
 .btn-add,
 .btn-edit,
+.btn-disabled,
 .btn-delete {
   padding: 0.5rem 0.75rem;
   font-size: 14px;
@@ -79,6 +81,10 @@ input:focus {
 }
 .btn-delete {
   background-color: #b72424;
+}
+.btn-disabled {
+  background-color: #929292;
+  cursor: not-allowed;
 }
 
 .btn-logout {
@@ -248,5 +254,52 @@ table > tbody > tr > td {
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  width: 10%;
+}
+
+@media (max-width: 950px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.grid-item {
+  margin: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #929292;
+  border-radius: 10px;
+  background-color: #d8d8d8;
+}
+
+.img {
+  width: 200px;
+  height: 200px;
+}
+
+.review {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-item {
+  display: flex;
+  flex-direction: row;
+}
+.review-summary {
+  margin-left: 20px;
+
+  > textarea {
+    height: 150px;
+    width: 300px;
   }
 }
